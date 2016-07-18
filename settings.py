@@ -1,0 +1,1 @@
+STEP_SIZE = 0.000018  # roughly equal to 2 meters, in degrees lat/long
