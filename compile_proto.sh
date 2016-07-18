@@ -1,6 +1,6 @@
 PROTOS_LIB="POGOProtos"
 PROTOCOL_OUT="protocol"
-INIT="__init__.py"
+FIX_PY_IMPORTS_CODE="import os\nimport sys\nsys.path.append(os.path.dirname(__file__))"
 
 cd "$PROTOS_LIB"
 ./compile.py -l python -o ../"$PROTOCOL_OUT"
@@ -12,4 +12,4 @@ for d in "$PROTOCOL_OUT"/*/; do
 	echo "Setting up module $d"
 done
 
-printf "import os\nimport sys\nsys.path.append(os.path.dirname(__file__))" > "$PROTOCOL_OUT/__init__.py"
+printf "$FIX_PY_IMPORTS_CODE" > "$PROTOCOL_OUT/__init__.py"
