@@ -1,4 +1,5 @@
 from functools import partial
+from geopy.distance import vincenty
 from math import sin, cos, atan2, sqrt
 
 from utils.settings import STEP_SIZE_POLAR, STEP_SIZE_METERS
@@ -42,14 +43,8 @@ class BaseModule:
         self.rpc_client
         pass
 
-    def _distance_between(self, lat1, lon1, lat2, lon2):
-        dlon = lon2 - lon1
-        dlat = lat2 - lat1
-        a = (sin(dlat / 2)) ^ 2 + cos(lat1) * cos(lat2) * (sin(dlon / 2)) ^ 2
-        c = 2 * atan2(sqrt(a), sqrt(1 - a))
-        d = 6371 * c  # 6,371 is the earth's circumference in km
-        return d / 1000  # divide to turn into meters
+    def _distance_between(self, point1, point2):
+        return vincenty(point1, point2).meters
 
-    def _player_distance_to(self, lat, lon):
-        return self.distance_between(lat, lon, self.player.lat,
-                                     self.player.lon)
+    def _player_distance_to(self, point):
+        return self.distance_between((self.player.lat, self.player.lon), point)

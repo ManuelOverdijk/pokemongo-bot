@@ -8,8 +8,10 @@ PTC_OAUTH_URL = 'https://sso.pokemon.com/sso/oauth2.0/accessToken'
 PTC_CLIENT_SECRET = 'w8ScCUXJQc6kXKw8FiOhd8Fixzht18Dq3PEVkUCP5ZPxtgyWsbTvWHFLm2wNY0JR'
 PTC_CLIENT_ID = 'mobile-app_pokemon-go'
 PTC_CLIENT_REDIRECT_URI = 'https://www.nianticlabs.com/pokemongo/error'
+PTC_TOKEN_MARKER = 'sso.pokemon.com'
 
 API_USER_AGENT = 'Dalvik/2.1.0 (Linux; U; Android 6.0.1; ONEPLUS A3003 Build/MMB29M)'
-API_URL = 'https://pgorelease.nianticlabs.com/plfe/rpc'
+API_INITIAL_URL = 'https://pgorelease.nianticlabs.com/plfe/rpc'
+API_OWN_URL = 'https://%s/rpc'
 
 PARANOID_MODE = False

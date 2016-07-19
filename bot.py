@@ -9,9 +9,13 @@ class Bot:
     player = Player()
     rpc_client = None
 
-    def __init__(self, token, location_name):
+    def __init__(self, auth_token, location_name):
         geolocator = GoogleV3()
         position = geolocator.geocode(location_name)
         self.player.lat = position.latitude
         self.player.lon = position.longitude
-        self.rpc_client = RpcClient(token, self.player)
+        self.rpc_client = RpcClient(auth_token, self.player)
+
+    # def run_loop(self):
+    #     while True:
+
