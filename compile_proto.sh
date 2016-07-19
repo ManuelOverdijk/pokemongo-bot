@@ -7,9 +7,17 @@ cd "$PROTOS_LIB"
 
 cd ..
 
-for d in "$PROTOCOL_OUT"/*/; do
-	echo "" > "${d}__init__.py"
-	echo "Setting up module $d"
-done
+
+recursive_fixing() {
+	for i in "$1"/*/; do
+		if [ -d "$i" ]; then
+			echo "Setting up module $i"
+			echo "" > "${i}__init__.py"
+			recursive_fixing "$i"
+		fi
+	done
+}
+
+recursive_fixing "$PROTOCOL_OUT"
 
 printf "$FIX_PY_IMPORTS_CODE" > "$PROTOCOL_OUT/__init__.py"
