@@ -11,3 +11,5 @@ PTC_CLIENT_REDIRECT_URI = 'https://www.nianticlabs.com/pokemongo/error'
 
 API_USER_AGENT = 'Dalvik/2.1.0 (Linux; U; Android 6.0.1; ONEPLUS A3003 Build/MMB29M)'
 API_URL = 'https://pgorelease.nianticlabs.com/plfe/rpc'
+
+PARANOID_MODE = False

@@ -1,1 +1,3 @@
+requests
 protobuf>=3.0.0a3
+geopy>=1.11.0
