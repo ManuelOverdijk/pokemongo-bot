@@ -1,4 +1,5 @@
-STEP_SIZE = 0.000018  # roughly equal to 2 meters, in degrees lat/long
+STEP_SIZE_METERS = 2
+STEP_SIZE_POLAR = 0.000009 * STEP_SIZE_METERS  # roughly equal to 1 meter, in degrees lat/long
 
 PTC_LOGIN_URL = 'https://sso.pokemon.com/sso/login?service=https%3A%2F%2Fsso.pokemon.com%2Fsso%2Foauth2.0%2FcallbackAuthorize'
 PTC_OAUTH_URL = 'https://sso.pokemon.com/sso/oauth2.0/accessToken'
