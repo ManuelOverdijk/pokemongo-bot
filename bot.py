@@ -43,11 +43,15 @@ class Bot(object):
     # def run_loop(self):
     #     while True:
 
+## TODO:
+# [1] Task interface preliminary, needs to be made concrete
+# [2] Move scheduler into separate module and move execution_step into
+#     a base class
 class RandomizedTaskScheduler(object):
     def __init__(self):
-        pass
+        self._current_task = None
 
-    def select_task(self, tasks):
+    def update_tasks(self, tasks):
         from random import shuffle
         shuffled = tasks[:]
         shuffle(shuffled)
@@ -58,4 +62,14 @@ class RandomizedTaskScheduler(object):
                 max_priority = priority
                 selected_task = task
 
-        return selected_task
+        if (
+            max_priority > self.__current_task.priority
+            or self._current_task.isdone
+        ):
+            self._current_task = selected_task
+
+    def execution_step(self):
+        ## TODO: check task interface (partials.pop())
+        #
+        next_task = self._current_task.partials.pop()
+        next_task()
