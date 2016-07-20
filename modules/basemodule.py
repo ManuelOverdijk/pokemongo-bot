@@ -1,6 +1,5 @@
 from functools import partial
 from geopy.distance import vincenty
-from math import sin, cos, atan2, sqrt
 
 from POGOProtos.Networking.Requests.Messages_pb2 import (
     EncounterMessage,
