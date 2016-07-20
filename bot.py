@@ -3,7 +3,7 @@ from utils.rpc_client import RpcClient
 from utils.structures import Data, Player
 
 
-class Bot:
+class Bot(object):
     def __init__(self, rpc):
         self.rpc_client = rpc
         self.data = Data()

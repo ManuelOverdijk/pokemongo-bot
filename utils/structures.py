@@ -1,9 +1,9 @@
-class Data:
+class Data(object):
     def __init__(self):
         self.nearby_pokemon = []
 
 
-class Player:
+class Player(object):
     def __init__(self, latitude, longitude):
         self.lat = latitude
         self.lon = longitude

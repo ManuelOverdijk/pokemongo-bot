@@ -5,7 +5,7 @@ from protocol.Networking.Envelopes.RequestEnvelope_pb2 import RequestEnvelope
 from protocol.Networking.Envelopes.ResponseEnvelope_pb2 import ResponseEnvelope
 from pgoexceptions import RpcException
 
-class RpcClient:
+class RpcClient(object):
 
     def __init__(self, player):
         self.player = player
