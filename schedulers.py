@@ -1,4 +1,5 @@
 class BaseTaskScheduler(object):
+    
     def __init__(self):
         self._current_task = None
 
@@ -13,6 +14,7 @@ class BaseTaskScheduler(object):
             self._current_task = self._current_task if result else None
 
 class RandomizedTaskScheduler(BaseTaskScheduler):
+
     def __init__(self):
         super(self.__class__, self).__init__()
 
@@ -21,15 +23,14 @@ class RandomizedTaskScheduler(BaseTaskScheduler):
         shuffled = tasks[:]
         shuffle(shuffled)
 
-        max_priority, _, selected_task = shuffled[0]
-        for priority, _, task in shuffled:
-            if priority > max_priority:
-                max_priority = priority
+        selected_task = shuffled[0]
+        for task in shuffled:
+            if task.priority > selected_task.priority:
                 selected_task = task
 
         if (
             not self._current_task
-            or max_priority > self._current_task.priority
+            or selected_task.priority > self._current_task.priority
             or self._current_task.is_done
         ):
             self._current_task = selected_task
