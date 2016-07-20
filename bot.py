@@ -44,7 +44,7 @@ class Bot(object):
             return module
         except:
             raise ValueError(
-                'Bot.add_modules: %s not a module' % repr(mod)
+                'Bot.add_modules: %s not a module' % repr(module)
             )
 
     def __module_exists(self, module):
