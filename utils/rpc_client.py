@@ -45,7 +45,19 @@ class RpcClient(object):
                 'RpcClient.call: not authenticated'
             )
         else:
-            return self.__call_rpc(requests)
+            return self.__call_rpc(requests).returns
+
+    def get_response(self, request, rpc_id, response_type):
+        response_data = self.call([(request, rpc_id)])[0]
+        return response_type.ParseFromString(response_data)
+
+    def get_responses(self, request_list):
+        requests = [(req, rpc_id) for req, rpc_id, _ in request_list]
+        response_types = [resp for _, _, resp in request_list]
+
+        response_data_list = self.call(requests)
+        zipped_responses = zip(response_types, response_data_list)
+        return [type.ParseFromString(data) for type, data in zipped_responses]
 
     @property
     def isauthenticated(self):
