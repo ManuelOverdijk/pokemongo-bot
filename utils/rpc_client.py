@@ -41,7 +41,7 @@ class RpcClient(object):
 
     def call(self, requests):
         if not self.isauthenticated:
-            raise RPCException(
+            raise RpcException(
                 'RpcClient.call: not authenticated'
             )
         else:
