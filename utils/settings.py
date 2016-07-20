@@ -12,6 +12,6 @@ PTC_TOKEN_MARKER = 'sso.pokemon.com'
 
 API_USER_AGENT = 'Dalvik/2.1.0 (Linux; U; Android 6.0.1; ONEPLUS A3003 Build/MMB29M)'
 API_INITIAL_URL = 'https://pgorelease.nianticlabs.com/plfe/rpc'
-API_OWN_URL = 'https://%s/rpc'
+API_OWN_URL = 'https://{0}/rpc'
 
 PARANOID_MODE = False

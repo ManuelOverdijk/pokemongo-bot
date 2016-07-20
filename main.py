@@ -2,6 +2,9 @@ from getpass import getpass
 
 from bot import Bot
 from utils.auth import PtcAuth
+from utils.rpc_client import RpcClient
+from utils.structures import Player
+from geopy.geocoders import GoogleV3
 
 if __name__ == '__main__':
     login_type = {
@@ -16,8 +19,13 @@ if __name__ == '__main__':
                          '[New York, NY, USA]: ') or 'New York, NY, USA'
 
     try:
+        geolocator = GoogleV3()
         token = login_type().get_auth_token(username, password)
-        bot = Bot(token, location)
+
+        position = geolocator.geocode(location)
+        player = Player(position.latitude, position.longitude)
+        rpc = RpcClient(token, player)
+        bot = Bot(rpc)
     except ValueError as error:
         print(error)
         exit(1)

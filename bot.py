@@ -1,21 +1,13 @@
-from geopy.geocoders import GoogleV3
 
 from utils.rpc_client import RpcClient
 from utils.structures import Data, Player
 
 
 class Bot:
-    data = Data()
-    player = Player()
-    rpc_client = None
-
-    def __init__(self, auth_token, location_name):
-        geolocator = GoogleV3()
-        position = geolocator.geocode(location_name)
-        self.player.lat = position.latitude
-        self.player.lon = position.longitude
-        self.rpc_client = RpcClient(auth_token, self.player)
+    def __init__(self, rpc):
+        self.player = rpc.player
+        self.data = Data()
+        self.rpc_client = rpc
 
     # def run_loop(self):
     #     while True:
-
