@@ -14,3 +14,21 @@ class Bot(object):
 
     # def run_loop(self):
     #     while True:
+
+class RandomizedTaskScheduler(object):
+
+    def __init__(self):
+        pass
+
+    def select_task(self, tasks):
+        from random import shuffle
+        shuffled = tasks[:]
+        shuffle(shuffled)
+
+        max_priority, _, selected_task = shuffled[0]
+        for priority, _, task in shuffled:
+            if priority > max_priority:
+                max_priority = priority
+                selected_task = task
+
+        return selected_task
