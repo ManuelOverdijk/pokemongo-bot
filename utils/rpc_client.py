@@ -3,7 +3,7 @@ from random import randint
 from settings import API_INITIAL_URL, API_OWN_URL, API_USER_AGENT
 from protocol.Networking.Envelopes.RequestEnvelope_pb2 import RequestEnvelope
 from protocol.Networking.Envelopes.ResponseEnvelope_pb2 import ResponseEnvelope
-from pgoexceptions import AuthenticationException
+from pgoexceptions import RpcException
 
 class RpcClient:
 
@@ -16,13 +16,13 @@ class RpcClient:
         self.__api_auth_ticket = None
 
     def authenticate(self, login_session):
-        if not login_session.logged_in:
-            raise AuthenticationException(
+        if not login_session.islogged_in:
+            raise RpcException(
                 'RpcClient.authenticate: not logged in'
             )
 
         if self.__api_auth_ticket:
-            raise AuthenticationException(
+            raise RpcException(
                 'RpcClient.authenticate: already authenticated'
             )
         else:
