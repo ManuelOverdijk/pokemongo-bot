@@ -30,7 +30,7 @@ class RpcClient:
                 request_env.auth_info.token.contents = token
                 request_env.auth_info.token.unknown2 = 59
 
-                response = self.call([], request_env)
+                response = self.call(requests = [], request_env = request_env)
                 self._api_auth_ticket = response.auth_ticket
             except:
                 return False

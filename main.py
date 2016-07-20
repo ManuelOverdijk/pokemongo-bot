@@ -28,6 +28,7 @@ if __name__ == '__main__':
         player = Player(position.latitude, position.longitude)
         rpc = RpcClient(player)
         if rpc.authenticate(token, provider):
+            print "[RPC] Authenticated"
             bot = Bot(rpc)
         else:
             print "[RPC] Failed to authenticate"
