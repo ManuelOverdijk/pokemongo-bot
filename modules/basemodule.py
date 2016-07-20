@@ -5,14 +5,15 @@ from math import sin, cos, atan2, sqrt
 from utils.settings import STEP_SIZE_POLAR, STEP_SIZE_METERS
 
 
-class BaseModule:
-    
-    def __init__(self, data, player, rpc_client):
-        self.data = data
+class BaseModule(object):
+
+    def __init__(self, priority=1):
+        self.priority = priority
+
+    def __injectmodule__(self, player, data, rpc_client):
         self.player = player
+        self.data = data
         self.rpc_client = rpc_client
-        self.priority = 1
-        pass
 
     def teleport_to(self, lat, lon):
         def wrapper(lat, lon):

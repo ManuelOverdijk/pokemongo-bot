@@ -1,4 +1,3 @@
-
 from utils.rpc_client import RpcClient
 from utils.structures import Data, Player
 
@@ -22,10 +21,20 @@ class Bot(object):
         for mod in modules:
             if self.__module_exists(mod):
                 raise ValueError(
-                    'Bot.add_modules: module already added'
+                    'Bot.add_modules: module %s already added' % repr(mod)
                 )
-            self.__modules.append((idm, mod))
+            injected = self.__inject_module(mod)
+            self.__modules.append((idm, injected))
             idm += 1
+
+    def __inject_module(self, module):
+        try:
+            module.__injectmodule__(self.player, self.data, self.rpc_client)
+            return module
+        except:
+            raise ValueError(
+                'Bot.add_modules: %s not a module' % repr(mod)
+            )
 
     def __module_exists(self, module):
         module_classes = [mod.__class__ for _, mod in self.__modules]
@@ -35,7 +44,6 @@ class Bot(object):
     #     while True:
 
 class RandomizedTaskScheduler(object):
-
     def __init__(self):
         pass
 
