@@ -1,6 +1,7 @@
 from getpass import getpass
 
-from bot import Bot, RandomizedTaskScheduler
+from bot import Bot
+from schedulers import RandomizedTaskScheduler
 from utils.auth import PtcAuth
 from utils.rpc_client import RpcClient
 from utils.structures import Player
