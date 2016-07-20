@@ -4,13 +4,32 @@ from utils.structures import Data, Player
 
 
 class Bot(object):
-    def __init__(self, rpc):
+    def __init__(self, rpc, scheduler):
         self.rpc_client = rpc
         self.data = Data()
+        self.__scheduler = scheduler
+        self.__modules = []
 
     @property
     def player(self):
         return self.rpc_client.player
+
+    def add_module(self, module):
+        self.add_modules([module])
+
+    def add_modules(self, modules):
+        idm = len(self.__modules)
+        for mod in modules:
+            if self.__module_exists(mod):
+                raise ValueError(
+                    'Bot.add_modules: module already added'
+                )
+            self.__modules.append((idm, mod))
+            idm += 1
+
+    def __module_exists(self, module):
+        module_classes = [mod.__class__ for _, mod in self.__modules]
+        return module.__class__ in module_classes
 
     # def run_loop(self):
     #     while True:

@@ -1,10 +1,10 @@
 from getpass import getpass
 
-from bot import Bot
+from bot import Bot, RandomizedTaskScheduler
 from utils.auth import PtcAuth
 from utils.rpc_client import RpcClient
 from utils.structures import Player
-from utils.pgoexceptions import AuthenticationException
+from utils.pgoexceptions import AuthenticationException, RpcException
 from geopy.geocoders import GoogleV3
 
 if __name__ == '__main__':
@@ -31,12 +31,15 @@ if __name__ == '__main__':
         if login_session.login(username, password):
             if rpc.authenticate(login_session):
                 print "[RPC] Authenticated"
-                bot = Bot(rpc)
+                scheduler = RandomizedTaskScheduler()
+                bot = Bot(rpc, scheduler)
             else:
                 print "[RPC] Failed to authenticate"
         else:
             print "[LOGIN] Login failed, check your username and password"
     except AuthenticationException as error:
+        print(error)
+    except RpcException as error:
         print(error)
     except ValueError as error:
         print(error)
