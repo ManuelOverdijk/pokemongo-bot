@@ -25,10 +25,6 @@ class Bot(object):
                 self.__scheduler.update_tasks(tasks)
             self.__scheduler.execute_step()
 
-
-    def add_module(self, module):
-        self.add_modules([module])
-
     def add_modules(self, modules):
         for mod in modules:
             if self.__module_exists(mod):
