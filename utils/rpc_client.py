@@ -1,7 +1,8 @@
 from requests import session
 from random import randint
 from settings import API_INITIAL_URL, API_USER_AGENT, PTC_TOKEN_MARKER
-from protocol.Networking.Envelopes_pb2 import Envelopes
+from protocol.Networking.Envelopes.RequestEnvelope_pb2 import RequestEnvelope
+from protocol.Networking.Envelopes.ResponseEnvelope_pb2 import ResponseEnvelope
 from protocol.Networking.Requests.Request_pb2 import Request
 from protocol.Networking.Requests.RequestType_pb2 import GET_PLAYER
 from protocol.Networking.Requests.Messages.GetPlayerMessage_pb2 import GetPlayerMessage
@@ -28,7 +29,7 @@ class RpcClient:
 
     def call(self, request_type, request_message):
         self._request_id += 1
-        request_env = Envelopes.RequestEnvelope()
+        request_env = RequestEnvelope()
         request_env.request_id = self._request_id
         request_env.status_code = 2
         request_env.altitude = 0.0
@@ -43,10 +44,9 @@ class RpcClient:
         else:
             request_env.auth_ticket = self._api_auth_ticket
 
-        request = Request()
+        request = request_env.requests.add()
         request.request_type = request_type
         request.request_message = request_message.SerializeToString()
-        request_env.requests.extend([request])
 
         result = self._session.post(self._api_url,
                                       data=request_env.SerializeToString())
