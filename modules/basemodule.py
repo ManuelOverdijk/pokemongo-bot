@@ -1,6 +1,5 @@
 from functools import partial
 from geopy.distance import vincenty
-from math import sin, cos, atan2, sqrt
 
 from POGOProtos.Networking.Requests.Messages.EncounterMessage_pb2 import EncounterMessage
 from POGOProtos.Networking.Requests.Messages.CatchPokemonMessage_pb2 import CatchPokemonMessage
