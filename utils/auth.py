@@ -15,7 +15,7 @@ class PtcAuth(object):
         self.auth_token = None
 
     @property
-    def islogged_in(self):
+    def is_logged_in(self):
         return self.auth_token is not None
 
     def login(self, username, password):

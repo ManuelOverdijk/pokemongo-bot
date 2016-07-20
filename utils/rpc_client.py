@@ -1,8 +1,12 @@
 from requests import session
-from random import randint
+from random imxport randint
 from settings import API_INITIAL_URL, API_OWN_URL, API_USER_AGENT
-from POGOProtos.Networking.Envelopes.RequestEnvelope_pb2 import RequestEnvelope
-from POGOProtos.Networking.Envelopes.ResponseEnvelope_pb2 import ResponseEnvelope
+
+from POGOProtos.Networking.Envelopes_pb2 import (
+    RequestEnvelope,
+    ResponseEnvelope
+)
+
 from pgoexceptions import RpcException
 
 class RpcClient(object):
@@ -16,7 +20,7 @@ class RpcClient(object):
         self.__api_auth_ticket = None
 
     def authenticate(self, login_session):
-        if not login_session.islogged_in:
+        if not login_session.is_logged_in:
             raise RpcException(
                 'RpcClient.authenticate: not logged in'
             )
@@ -60,7 +64,7 @@ class RpcClient(object):
         return [type.ParseFromString(data) for type, data in zipped_responses]
 
     @property
-    def isauthenticated(self):
+    def is_authenticated(self):
         return self.__api_auth_ticket is not None
 
     def __call_rpc(self, requests, request_env = None):
