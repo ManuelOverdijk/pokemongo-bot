@@ -7,11 +7,13 @@ from utils.structures import Player
 from geopy.geocoders import GoogleV3
 
 if __name__ == '__main__':
+    provider = raw_input('Which login provider do you want to '
+                'use (google/ptc)? [ptc]: ') or 'ptc'
+
     login_type = {
         'google': None,
         'ptc': PtcAuth
-    }[raw_input('Which login provider do you want to '
-                'use (google/ptc)? [ptc]: ') or 'ptc']
+    }[provider]
 
     username = raw_input('Username: ')
     password = getpass()
@@ -24,8 +26,11 @@ if __name__ == '__main__':
 
         position = geolocator.geocode(location)
         player = Player(position.latitude, position.longitude)
-        rpc = RpcClient(token, player)
-        bot = Bot(rpc)
+        rpc = RpcClient(player)
+        if rpc.authenticate(token, provider):
+            bot = Bot(rpc)
+        else:
+            print "[RPC] Failed to authenticate"
     except ValueError as error:
         print(error)
         exit(1)
