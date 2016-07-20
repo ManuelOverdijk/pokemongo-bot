@@ -37,7 +37,6 @@ class Bot(object):
                 )
             injected = self.__inject_module(mod)
             self.__modules.append((injected.__class__, injected))
-            idm += 1
 
     def __inject_module(self, module):
         try:
