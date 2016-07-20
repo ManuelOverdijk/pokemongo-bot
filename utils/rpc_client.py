@@ -1,8 +1,8 @@
 from requests import session
 from random import randint
 from settings import API_INITIAL_URL, API_OWN_URL, API_USER_AGENT
-from protocol.Networking.Envelopes.RequestEnvelope_pb2 import RequestEnvelope
-from protocol.Networking.Envelopes.ResponseEnvelope_pb2 import ResponseEnvelope
+from POGOProtos.Networking.Envelopes.RequestEnvelope_pb2 import RequestEnvelope
+from POGOProtos.Networking.Envelopes.ResponseEnvelope_pb2 import ResponseEnvelope
 from pgoexceptions import RpcException
 
 class RpcClient(object):
