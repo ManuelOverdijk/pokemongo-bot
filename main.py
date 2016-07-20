@@ -4,6 +4,7 @@ from bot import Bot
 from utils.auth import PtcAuth
 from utils.rpc_client import RpcClient
 from utils.structures import Player
+from utils.pgoexceptions import AuthenticationException
 from geopy.geocoders import GoogleV3
 
 if __name__ == '__main__':
@@ -22,16 +23,21 @@ if __name__ == '__main__':
 
     try:
         geolocator = GoogleV3()
-        token = login_type().get_auth_token(username, password)
-
         position = geolocator.geocode(location)
         player = Player(position.latitude, position.longitude)
         rpc = RpcClient(player)
-        if rpc.authenticate(token, provider):
-            print "[RPC] Authenticated"
-            bot = Bot(rpc)
+
+        login_session = login_type()
+        if login_session.login(username, password):
+            if rpc.authenticate(login_session):
+                print "[RPC] Authenticated"
+                bot = Bot(rpc)
+            else:
+                print "[RPC] Failed to authenticate"
         else:
-            print "[RPC] Failed to authenticate"
+            print "[LOGIN] Login failed, check your username and password"
+    except AuthenticationException as error:
+        print(error)
     except ValueError as error:
         print(error)
         exit(1)

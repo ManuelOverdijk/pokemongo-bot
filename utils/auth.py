@@ -1,32 +1,44 @@
 import json
 import re
-
 import requests
-
 import settings
-
+from pgoexceptions import AuthenticationException
 
 class PtcAuth(object):
-    LOGIN_HEADERS = {
+    provider = 'ptc'
+    __login_headers = {
         'user-agent': settings.LOGIN_USER_AGENT
     }
 
     def __init__(self):
-        self._session = self._make_session()
+        self.__session = self._make_session()
+        self.auth_token = None
 
-    def get_auth_token(self, username, password):
+    @property
+    def islogged_in(self):
+        return self.auth_token is not None
+
+    def login(self, username, password):
+        try:
+            self.auth_token = self._get_auth_token(username, password)
+        except AuthenticationException as error:
+            ## TODO: event logging?
+            pass
+        return self.islogged_in
+
+    def _get_auth_token(self, username, password):
         login_data = self._get_login_data()
         login_token = self._get_login_token(username, password, login_data)
 
         return self._get_oauth_token(login_token)
 
     def _get_login_data(self):
-        response = self._session.get(settings.PTC_LOGIN_URL)
+        response = self.__session.get(settings.PTC_LOGIN_URL)
         return json.loads(response.content)
 
     def _get_login_token(self, username, password, login_data):
         payload = self._make_login_payload(username, password, login_data)
-        response = self._session.post(settings.PTC_LOGIN_URL,
+        response = self.__session.post(settings.PTC_LOGIN_URL,
                                       data=payload,
                                       allow_redirects=False)
 
@@ -40,13 +52,13 @@ class PtcAuth(object):
             token_data = response.headers['location']
             return token_data[token_data.rfind('=') + 1:]
 
-        raise ValueError(
-            'token not found: {0}'.format(str(jsonresponse['errors']))
+        raise AuthenticationException(
+            'Authentication failed: %s' % str(jsonresponse['errors'])
         )
 
     def _get_oauth_token(self, login_token):
         payload = self._make_oauth_payload(login_token)
-        response = self._session.post(settings.PTC_OAUTH_URL, data=payload)
+        response = self.__session.post(settings.PTC_OAUTH_URL, data=payload)
 
         token = re.sub('.*en=', '', response.content)
         return re.sub('.com.*', '.com', token)
@@ -71,6 +83,6 @@ class PtcAuth(object):
 
     def _make_session(self):
         session = requests.session()
-        session.headers.update(self.LOGIN_HEADERS)
+        session.headers.update(self.__login_headers)
 
         return session
