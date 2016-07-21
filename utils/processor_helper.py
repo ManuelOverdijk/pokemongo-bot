@@ -1,5 +1,7 @@
-from POGOProtos.Networking.Requests_pb2 import RequestType
+from collections import Iterable
 from importlib import import_module
+
+from POGOProtos.Networking.Requests_pb2 import RequestType
 
 request_processors = {}
 
@@ -33,8 +35,12 @@ def __request_processor(request_class):
     def wrapper(**kwargs):
         obj = request_class()
         for k, v in kwargs.iteritems():
-            setattr(obj, k, v)
+            if isinstance(v, Iterable) and not isinstance(v, basestring):
+                getattr(obj, k).extend(v)
+            else:
+                setattr(obj, k, v)
         return obj
+
     return wrapper
 
 
@@ -66,6 +72,7 @@ def __request_name(request_type):
 def __response_name(request_type):
     cam_name = __camel_case_request_name(request_type)
     return cam_name + 'Response'
+
 
 def __camel_case_request_name(request_type):
     name = RequestType.Name(request_type)

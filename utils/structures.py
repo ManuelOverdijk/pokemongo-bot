@@ -1,6 +1,11 @@
 class Data(object):
     def __init__(self):
+        self.catchable_pokemon = []
         self.nearby_pokemon = []
+        self.wild_pokemon = []
+        self.decimated_spawn_points = []
+        self.spawn_points = []
+        self.forts = []
 
 
 class Player(object):

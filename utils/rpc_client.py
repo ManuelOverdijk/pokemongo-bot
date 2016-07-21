@@ -1,16 +1,16 @@
-from requests import session
 from random import randint
-from settings import API_INITIAL_URL, API_OWN_URL, API_USER_AGENT
+
+from requests import session
 
 from POGOProtos.Networking.Envelopes_pb2 import (
     RequestEnvelope,
     ResponseEnvelope
 )
-
 from pgoexceptions import RpcException
+from settings import API_INITIAL_URL, API_OWN_URL, API_USER_AGENT
+
 
 class RpcClient(object):
-
     def __init__(self, player):
         self.player = player
         self.__request_id = randint(1000000, 9999999)
@@ -36,7 +36,8 @@ class RpcClient(object):
                 request_env.auth_info.token.contents = login_session.auth_token
                 request_env.auth_info.token.unknown2 = 59
 
-                response = self.__call_rpc(requests = [], request_env = request_env)
+                response = self.__call_rpc(requests=[],
+                                           request_env=request_env)
                 self.__api_auth_ticket = response.auth_ticket
             except:
                 return False
@@ -62,15 +63,20 @@ class RpcClient(object):
 
         response_data_list = self.call(requests)
         zipped_responses = zip(response_types, response_data_list)
-        parsed_responses = [rept.ParseFromString(data) for rept, data in zipped_responses]
-        if any(parsed_responses):
+
+        for rept, data in zipped_responses:
+            rept.ParseFromString(data)
+
+        parsed_responses = [rept for rept,_ in zipped_responses]
+
+        if any(zipped_responses):
             return dict(zip(requests_identifiers, parsed_responses))
 
     @property
     def is_authenticated(self):
         return self.__api_auth_ticket is not None
 
-    def __call_rpc(self, requests, request_env = None):
+    def __call_rpc(self, requests, request_env=None):
         self.__request_id += 1
 
         if not request_env:
@@ -104,7 +110,7 @@ class RpcClient(object):
 
     def __get_response(self, envelope):
         result = self.__session.post(self.__api_url,
-                                    data=envelope.SerializeToString())
+                                     data=envelope.SerializeToString())
         response = ResponseEnvelope()
         response.ParseFromString(result.content)
         return response

@@ -34,6 +34,7 @@ if __name__ == '__main__':
                 print "[RPC] Authenticated"
                 scheduler = RandomizedTaskScheduler()
                 bot = Bot(rpc, scheduler)
+                bot.run_loop()
             else:
                 print "[RPC] Failed to authenticate"
         else:

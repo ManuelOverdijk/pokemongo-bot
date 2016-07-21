@@ -1,17 +1,19 @@
-from utils.rpc_client import RpcClient
-from utils.structures import Data, Player
-from utils.task import Task
-from processors import make_request, process_request, process_requests
+from time import time
+
 import POGOProtos.Networking.Requests_pb2 as Requests
+from processors import make_request, process_request, process_requests
+from utils.structures import Data
+from utils.task import Task
+from utils.map import get_neighbours
 
 
 class Bot(object):
-
     def __init__(self, rpc, scheduler):
         self.rpc_client = rpc
         self.data = Data()
         self.__scheduler = scheduler
         self.__modules = []
+        self.__last_update = 0
 
     @property
     def player(self):
@@ -20,7 +22,7 @@ class Bot(object):
     def run_loop(self):
         self.__initial_message()
         while True:
-            successful = self.__update_heartbeat()
+            successful = self.__update_map_objects()
             tasks = []
             for mod in self.__modules:
                 task_queue = mod.execute()
@@ -46,12 +48,40 @@ class Bot(object):
             make_request(Requests.GET_INVENTORY),
             make_request(Requests.CHECK_AWARDED_BADGES),
             make_request(Requests.DOWNLOAD_SETTINGS, params={
-                         'hash': '05daf51635c82611d1aac95c0b051d3ec088a930'})
+                'hash': '05daf51635c82611d1aac95c0b051d3ec088a930'})
         ]
-        process_requests(self.rpc_client, reqs)
+        result = process_requests(self.rpc_client, reqs)
+        pass
 
-    def __update_heartbeat(self):
-        ## TODO: implement correct heartbeat
+    def __update_map_objects(self):
+        cell_ids = get_neighbours(self.player.lat, self.player.lon)
+        request = make_request(Requests.GET_MAP_OBJECTS, params={
+            'cell_id': cell_ids,
+            'since_timestamp_ms': [self.__last_update] * len(cell_ids),
+            'latitude': self.player.lat,
+            'longitude': self.player.lon
+        })
+        response = process_request(self.rpc_client, request)
+
+        ## TODO: probably update our state in another method
+        self.__last_update = int(time())
+        attribs = {
+            'catchable_pokemon': 'catchable_pokemons',
+            'wild_pokemon': 'wild_pokemons',
+            'nearby_pokemon': 'nearby_pokemons',
+            'decimated_spawn_points': 'decimated_spawn_points',
+            'spawn_points': 'spawn_points',
+            'forts': 'forts',
+        }
+
+        for attrib in attribs:
+            setattr(self.data, attrib, [])
+
+        for map_cell in response.map_cells:
+            for our_attrib, pb_attrib in attribs.items():
+                value = getattr(self.data, our_attrib)
+                value += getattr(map_cell, pb_attrib)
+
         pass
 
     def __inject_module(self, module):

@@ -21,7 +21,11 @@ def make_request(request_type, params={}):
 
 
 def process_request(rpc, request):
-    return process_requests(rpc, [request])
+    # Returns just the response object, and not the RPC id.
+    # This is because looking for the matching response is not needed
+    # when only a single request was made.
+    rpc_id = request[0]
+    return process_requests(rpc, [request])[rpc_id]
 
 def process_requests(rpc, requests):
     messages = []
