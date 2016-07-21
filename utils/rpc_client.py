@@ -63,7 +63,8 @@ class RpcClient(object):
         response_data_list = self.call(requests)
         zipped_responses = zip(response_types, response_data_list)
         parsed_responses = [rept.ParseFromString(data) for rept, data in zipped_responses]
-        return dict(zip(requests_identifiers, parsed_responses))
+        if any(parsed_responses):
+            return dict(zip(requests_identifiers, parsed_responses))
 
     @property
     def is_authenticated(self):
