@@ -1,5 +1,5 @@
 from requests import session
-from random imxport randint
+from random import randint
 from settings import API_INITIAL_URL, API_OWN_URL, API_USER_AGENT
 
 from POGOProtos.Networking.Envelopes_pb2 import (

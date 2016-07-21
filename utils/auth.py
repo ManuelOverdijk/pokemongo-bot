@@ -24,7 +24,7 @@ class PtcAuth(object):
         except AuthenticationException as error:
             ## TODO: event logging?
             pass
-        return self.islogged_in
+        return self.is_logged_in
 
     def _get_auth_token(self, username, password):
         login_data = self._get_login_data()
