@@ -1,8 +1,8 @@
 from utils.rpc_client import RpcClient
 from utils.structures import Data, Player
 from utils.task import Task
-from processors import make_request, process_request
-import POGOProtos.Networking.Requests.Messages_pb2 as Messages
+from processors import make_request, process_request, process_requests
+import POGOProtos.Networking.Requests_pb2 as Requests
 
 
 class Bot(object):
@@ -18,6 +18,7 @@ class Bot(object):
         return self.rpc_client.player
 
     def run_loop(self):
+        self.__initial_message()
         while True:
             successful = self.__update_heartbeat()
             tasks = []
@@ -38,13 +39,20 @@ class Bot(object):
             injected = self.__inject_module(mod)
             self.__modules.append((injected.__class__, injected))
 
+    def __initial_message(self):
+        reqs = [
+            make_request(Requests.GET_PLAYER),
+            make_request(Requests.GET_HATCHED_EGGS),
+            make_request(Requests.GET_INVENTORY),
+            make_request(Requests.CHECK_AWARDED_BADGES),
+            make_request(Requests.DOWNLOAD_SETTINGS, params={
+                         'hash': '05daf51635c82611d1aac95c0b051d3ec088a930'})
+        ]
+        process_requests(self.rpc_client, reqs)
+
     def __update_heartbeat(self):
-        ## TODO: implement correct heartbeat with processors
-        #
-        #heartbeat = make_request(
-        #    Messages.GetMapObjectsMessage, self.player, self._data)
-        heartbeat = None
-        return process_request(self.rpc_client, heartbeat)
+        ## TODO: implement correct heartbeat
+        pass
 
     def __inject_module(self, module):
         try:

@@ -44,7 +44,7 @@ class RpcClient(object):
             return True
 
     def call(self, requests):
-        if not self.isauthenticated:
+        if not self.is_authenticated:
             raise RpcException(
                 'RpcClient.call: not authenticated'
             )
@@ -56,12 +56,14 @@ class RpcClient(object):
         return response_type.ParseFromString(response_data)
 
     def get_responses(self, request_list):
-        requests = [(req, rpc_id) for req, rpc_id, _ in request_list]
-        response_types = [resp for _, _, resp in request_list]
+        requests = [(rpc_id, req) for req, rpc_id, _ in request_list]
+        requests_identifiers = [rpc_id for _, rpc_id, _ in request_list]
+        response_types = [resp() for _, _, resp in request_list]
 
         response_data_list = self.call(requests)
         zipped_responses = zip(response_types, response_data_list)
-        return [type.ParseFromString(data) for type, data in zipped_responses]
+        parsed_responses = [rept.ParseFromString(data) for rept, data in zipped_responses]
+        return dict(zip(requests_identifiers, parsed_responses))
 
     @property
     def is_authenticated(self):
@@ -80,9 +82,12 @@ class RpcClient(object):
             request.request_message = req_message.SerializeToString()
 
         response_env = self.__get_response(request_env)
-        # Every response envelope contains an api url, might as well update
-        # every call.
-        self.__api_url = API_OWN_URL.format(response_env.api_url)
+        try:
+            if response_env.api_url:
+                api_url = response_env.api_url
+                self.__api_url = API_OWN_URL.format(api_url)
+        except:
+            pass
 
         return response_env
 
@@ -90,7 +95,7 @@ class RpcClient(object):
         request_env = RequestEnvelope()
         request_env.request_id = self.__request_id
         request_env.status_code = 2
-        request_env.altitude = 0.0
+        request_env.altitude = self.player.alt
         request_env.latitude = self.player.lat
         request_env.longitude = self.player.lon
         request_env.unknown12 = 123

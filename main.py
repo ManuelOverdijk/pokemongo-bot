@@ -25,7 +25,7 @@ if __name__ == '__main__':
     try:
         geolocator = GoogleV3()
         position = geolocator.geocode(location)
-        player = Player(position.latitude, position.longitude)
+        player = Player(position.latitude, position.longitude, 0.0)
         rpc = RpcClient(player)
 
         login_session = login_type()
