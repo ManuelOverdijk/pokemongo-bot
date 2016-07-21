@@ -1,8 +1,12 @@
 from utils.rpc_client import RpcClient
 from utils.structures import Data, Player
 from utils.task import Task
+from processors import make_request, process_request
+import POGOProtos.Networking.Requests.Messages_pb2 as Messages
+
 
 class Bot(object):
+
     def __init__(self, rpc, scheduler):
         self.rpc_client = rpc
         self.data = Data()
@@ -15,7 +19,7 @@ class Bot(object):
 
     def run_loop(self):
         while True:
-            ## TODO: send heartbeat
+            successful = self.__update_heartbeat()
             tasks = []
             for mod in self.__modules:
                 task_queue = mod.execute()
@@ -33,6 +37,14 @@ class Bot(object):
                 )
             injected = self.__inject_module(mod)
             self.__modules.append((injected.__class__, injected))
+
+    def __update_heartbeat(self):
+        ## TODO: implement correct heartbeat with processors
+        #
+        #heartbeat = make_request(
+        #    Messages.GetMapObjectsMessage, self.player, self._data)
+        heartbeat = None
+        return process_request(self.rpc_client, heartbeat)
 
     def __inject_module(self, module):
         try:
