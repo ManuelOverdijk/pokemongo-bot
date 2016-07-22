@@ -1,3 +1,6 @@
+from time import sleep
+
+
 class BaseTaskScheduler(object):
     
     def __init__(self):
@@ -13,6 +16,7 @@ class BaseTaskScheduler(object):
         if self._current_task and not self._current_task.is_done:
             result = self._current_task.execute_step()
             self._current_task = self._current_task if result is not False else None
+            sleep(2)
 
 class RandomizedTaskScheduler(BaseTaskScheduler):
 
