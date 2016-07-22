@@ -42,6 +42,7 @@ class Bot(object):
             self.__modules.append((injected.__class__, injected))
 
     def __initial_message(self):
+        process_request(self.rpc_client, make_request(Requests.GET_PLAYER))
         reqs = [
             make_request(Requests.GET_PLAYER),
             make_request(Requests.GET_HATCHED_EGGS),

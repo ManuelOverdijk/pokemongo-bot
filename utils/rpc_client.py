@@ -1,13 +1,12 @@
 from random import randint
-
 from requests import session
-
 from POGOProtos.Networking.Envelopes_pb2 import (
     RequestEnvelope,
     ResponseEnvelope
 )
 from pgoexceptions import RpcException
 from settings import API_INITIAL_URL, API_OWN_URL, API_USER_AGENT
+import time
 
 
 class RpcClient(object):
@@ -25,7 +24,7 @@ class RpcClient(object):
                 'RpcClient.authenticate: not logged in'
             )
 
-        if self.__api_auth_ticket:
+        if self.is_authenticated:
             raise RpcException(
                 'RpcClient.authenticate: already authenticated'
             )
@@ -44,7 +43,15 @@ class RpcClient(object):
 
             return True
 
-    def call(self, requests):
+
+
+    def get_response(self, request):
+        try:
+            return self.get_responses([request])[0]
+        except IndexError:
+            return None
+
+    def get_responses(self, requests):
         if not self.is_authenticated:
             raise RpcException(
                 'RpcClient.call: not authenticated'
@@ -52,25 +59,22 @@ class RpcClient(object):
         else:
             return self.__call_rpc(requests).returns
 
-    def get_response(self, request, rpc_id, response_type):
-        response_data = self.call([(request, rpc_id)])[0]
-        return response_type.ParseFromString(response_data)
-
-    def get_responses(self, request_list):
-        requests = [(rpc_id, req) for req, rpc_id, _ in request_list]
-        requests_identifiers = [rpc_id for _, rpc_id, _ in request_list]
-        response_types = [resp() for _, _, resp in request_list]
-
-        response_data_list = self.call(requests)
-        zipped_responses = zip(response_types, response_data_list)
-
-        for rept, data in zipped_responses:
-            rept.ParseFromString(data)
-
-        parsed_responses = [rept for rept,_ in zipped_responses]
-
-        if any(zipped_responses):
-            return dict(zip(requests_identifiers, parsed_responses))
+    # def get_responses(self, request_list):
+    #     responses = self.call(requests)
+    #     requests = [(rpc_id, req) for req, rpc_id, _ in request_list]
+    #     requests_identifiers = [rpc_id for _, rpc_id, _ in request_list]
+    #     response_types = [resp() for _, _, resp in request_list]
+    #
+    #     response_data_list = self.call(requests)
+    #     zipped_responses = zip(response_types, response_data_list)
+    #
+    #     for rept, data in zipped_responses:
+    #         rept.ParseFromString(data)
+    #
+    #     parsed_responses = [rept for rept,_ in zipped_responses]
+    #
+    #     if any(zipped_responses):
+    #         return dict(zip(requests_identifiers, parsed_responses))
 
     @property
     def is_authenticated(self):

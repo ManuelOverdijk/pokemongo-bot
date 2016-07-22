@@ -24,12 +24,23 @@ def process_request(rpc, request):
     # Returns just the response object, and not the RPC id.
     # This is because looking for the matching response is not needed
     # when only a single request was made.
-    rpc_id = request[0]
-    return process_requests(rpc, [request])[rpc_id]
+    request_id = request[0]
+    response = process_requests(rpc, [request])
+    if response:
+        return response[request_id]
+
+    return None
 
 def process_requests(rpc, requests):
-    messages = []
-    for request_type, request in requests:
-        response_type, _ = request_processors[request_type]
-        messages.append((request, request_type, response_type))
-    return rpc.get_responses(messages)
+    messages = rpc.get_responses(requests)
+    zipped_requests = zip(requests, messages)
+    responses = {}
+    if any(zipped_requests):
+        for request, response_data in zipped_requests:
+            request_type = request[0]
+            response_class = request_processors[request_type][0]
+            response_object = response_class()
+            response_object.ParseFromString(response_data)
+            responses[request_type] = response_object
+
+    return responses
