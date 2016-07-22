@@ -6,7 +6,6 @@ from POGOProtos.Networking.Envelopes_pb2 import (
 )
 from pgoexceptions import RpcException
 from settings import API_INITIAL_URL, API_OWN_URL, API_USER_AGENT
-import time
 
 
 class RpcClient(object):
@@ -43,8 +42,6 @@ class RpcClient(object):
 
             return True
 
-
-
     def get_response(self, request):
         try:
             return self.get_responses([request])[0]
@@ -58,23 +55,6 @@ class RpcClient(object):
             )
         else:
             return self.__call_rpc(requests).returns
-
-    # def get_responses(self, request_list):
-    #     responses = self.call(requests)
-    #     requests = [(rpc_id, req) for req, rpc_id, _ in request_list]
-    #     requests_identifiers = [rpc_id for _, rpc_id, _ in request_list]
-    #     response_types = [resp() for _, _, resp in request_list]
-    #
-    #     response_data_list = self.call(requests)
-    #     zipped_responses = zip(response_types, response_data_list)
-    #
-    #     for rept, data in zipped_responses:
-    #         rept.ParseFromString(data)
-    #
-    #     parsed_responses = [rept for rept,_ in zipped_responses]
-    #
-    #     if any(zipped_responses):
-    #         return dict(zip(requests_identifiers, parsed_responses))
 
     @property
     def is_authenticated(self):
