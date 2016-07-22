@@ -64,6 +64,10 @@ class Bot(object):
         })
         response = process_request(self.rpc_client, request)
 
+        if not response:
+            print('Received empty MapObjects response')
+            return
+
         ## TODO: probably update our state in another method
         self.__last_update = int(time())
         attribs = {

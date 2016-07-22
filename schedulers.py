@@ -12,7 +12,7 @@ class BaseTaskScheduler(object):
     def execute_step(self):
         if self._current_task and not self._current_task.is_done:
             result = self._current_task.execute_step()
-            self._current_task = self._current_task if result else None
+            self._current_task = self._current_task if result is not False else None
 
 class RandomizedTaskScheduler(BaseTaskScheduler):
 

@@ -8,9 +8,9 @@ from geopy.geocoders import GoogleV3
 from bot import Bot
 from schedulers import RandomizedTaskScheduler
 from utils.auth import PtcAuth
-from utils.pgoexceptions import AuthenticationException, RpcException
 from utils.rpc_client import RpcClient
 from utils.structures import Player
+from modules.testmodule import TestModule
 
 
 def get_settings():
@@ -57,6 +57,9 @@ if __name__ == '__main__':
             print '[RPC] Authenticated'
             scheduler = RandomizedTaskScheduler()
             bot = Bot(rpc, scheduler)
+            bot.add_modules([
+                TestModule(priority=500)
+            ])
             bot.run_loop()
         else:
             print '[RPC] Failed to authenticate'

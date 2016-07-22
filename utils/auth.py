@@ -34,6 +34,9 @@ class PtcAuth(object):
 
     def _get_login_data(self):
         response = self.__session.get(settings.PTC_LOGIN_URL)
+        if response.status_code != 200:
+            raise AuthenticationException('Received login status code ' +
+                                          response.status_code)
         return json.loads(response.content)
 
     def _get_login_token(self, username, password, login_data):
