@@ -24,7 +24,7 @@ class Bot(object):
         while True:
             successful = self.__update_map_objects()
             tasks = []
-            for mod in self.__modules:
+            for _, mod in self.__modules:
                 task_queue = mod.execute()
                 if task_queue:
                     tasks.append(Task(task_queue, mod.priority))

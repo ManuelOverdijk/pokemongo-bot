@@ -5,7 +5,8 @@ class BaseTaskScheduler(object):
 
     def update_tasks(self, tasks):
         raise NotImplementedError(
-                'BaseTaskScheduler.update_tasks is abstract'
+                '%s does not have an update_tasks method' %
+                self.__class__.__name__
             )
 
     def execute_step(self):

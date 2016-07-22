@@ -11,7 +11,7 @@ from POGOProtos.Networking.Responses_pb2 import (
 )
 
 from utils.settings import STEP_SIZE_POLAR, STEP_SIZE_METERS
-from pgoexceptions import BotModuleException
+from utils.pgoexceptions import BotModuleException
 
 
 def task(function):
