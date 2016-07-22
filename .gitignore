@@ -2,3 +2,4 @@ POGOProtos/
 *.pyc
 .idea
 protocol
+/settings.json
