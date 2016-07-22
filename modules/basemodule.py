@@ -11,6 +11,7 @@ from POGOProtos.Networking.Responses_pb2 import (
 )
 
 from utils.settings import STEP_SIZE_POLAR, STEP_SIZE_METERS
+from pgoexceptions import BotModuleException
 
 
 def task(function):
@@ -23,6 +24,11 @@ def task(function):
 class BaseModule(object):
     def __init__(self, priority=1):
         self.priority = priority
+        if not hasattr(self, 'execute'):
+            raise BotModuleException(
+                ('Module %s does not appear to have an execute method ' +
+                'defined.') % self.__class__.__name__
+            )
 
     def __injectmodule__(self, player, data, rpc_client):
         self._player = player

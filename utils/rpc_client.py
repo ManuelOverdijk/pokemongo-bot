@@ -1,5 +1,7 @@
 from random import randint
+
 from requests import session
+
 from POGOProtos.Networking.Envelopes_pb2 import (
     RequestEnvelope,
     ResponseEnvelope
@@ -50,9 +52,7 @@ class RpcClient(object):
 
     def get_responses(self, requests):
         if not self.is_authenticated:
-            raise RpcException(
-                'RpcClient.call: not authenticated'
-            )
+            raise RpcException('RpcClient.call: not authenticated')
         else:
             return self.__call_rpc(requests).returns
 
