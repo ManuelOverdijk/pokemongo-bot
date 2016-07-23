@@ -14,7 +14,6 @@ from modules.idle import IdleModule
 from modules.catch_pokemon import CatchPokemonModule
 from modules.visit_pokestop import VisitPokestopModule
 
-
 def get_settings():
     try:
         with open('settings.json') as file:

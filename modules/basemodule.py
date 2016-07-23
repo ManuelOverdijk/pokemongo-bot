@@ -2,7 +2,7 @@ from functools import partial
 from random import uniform
 from geopy.distance import vincenty
 
-from POGOProtos.Inventory.ItemId_pb2 import _ITEMID
+from POGOProtos.Inventory_pb2 import ItemId
 import POGOProtos.Networking.Requests_pb2 as Requests
 from processors import make_request, process_request
 from utils.pgoexceptions import BotModuleException
@@ -68,7 +68,7 @@ class BaseModule(object):
     @task
     def catch_pokemon(self, encounter_id, spawn_point_id):
         params = {'encounter_id': encounter_id,
-                  'spawn_point_guid': spawn_point_id,
+                  'spawn_point_id': spawn_point_id,
                   'pokeball': 1,
                   'hit_pokemon': True,
                   'spin_modifier': 1,
@@ -100,7 +100,7 @@ class BaseModule(object):
         request = make_request(Requests.FORT_SEARCH, params=params)
         answer = process_request(self._rpc_client, request)
         if answer.result == 1:
-            item_ids = [_ITEMID.values_by_number[item.item_id].name for
+            item_ids = [ItemId.Name(item.item_id) for
                           item in answer.items_awarded]
             print 'Received items: ' +\
                   ', '.join([''.join([i.title() for i in item_id.split('_')[1:]]) +\
