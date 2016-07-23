@@ -76,7 +76,8 @@ class Bot(object):
             'nearby_pokemon': 'nearby_pokemons',
             'decimated_spawn_points': 'decimated_spawn_points',
             'spawn_points': 'spawn_points',
-            'forts': 'forts',
+            'fort_summaries': 'fort_summaries',
+            'forts': 'forts'
         }
 
         for attrib in attribs:

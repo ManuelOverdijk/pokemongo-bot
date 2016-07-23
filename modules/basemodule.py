@@ -2,7 +2,7 @@ from functools import partial
 from random import uniform
 from geopy.distance import vincenty
 
-
+from POGOProtos.Inventory.ItemId_pb2 import _ITEMID
 import POGOProtos.Networking.Requests_pb2 as Requests
 from processors import make_request, process_request
 from utils.pgoexceptions import BotModuleException
@@ -37,14 +37,14 @@ class BaseModule(object):
 
     @task
     def teleport_to(self, lat, lon):
-        print('Teleporting...')
+        print 'Teleporting...'
         self._player.lat = lat
         self._player.lon = lon
         return True
 
     @task
     def step_towards(self, lat, lon):
-        print('Walking...')
+        print 'Walking...'
         delta_lat = lat - self._player.lat
         delta_lon = lon - self._player.lon
         ratio = delta_lat / delta_lon
@@ -77,14 +77,40 @@ class BaseModule(object):
         request = make_request(Requests.CATCH_POKEMON, params=params)
         answer = process_request(self._rpc_client, request)
         if answer and answer.status == 1:
-            print 'Catch successful!'
+            print 'Catch successful'
         else:
-            print 'Catch failed!'
+            print 'Catch failed'
         pass
+
+    def get_fort_details(self, fort_id, latitude, longitude):
+        params = {'fort_id': fort_id,
+                  'latitude': latitude,
+                  'longitude': longitude}
+        request = make_request(Requests.FORT_DETAILS, params=params)
+        answer = process_request(self._rpc_client, request)
+        return answer
+
+    @task
+    def search_fort(self, fort_id, fort_lat, fort_lon):
+        params = {'fort_id': fort_id,
+                  'fort_latitude': fort_lat,
+                  'fort_longitude': fort_lon,
+                  'player_latitude': self._player.lat,
+                  'player_longitude': self._player.lon}
+        request = make_request(Requests.FORT_SEARCH, params=params)
+        answer = process_request(self._rpc_client, request)
+        if answer.result == 1:
+            item_ids = [_ITEMID.values_by_number[item.item_id].name for
+                          item in answer.items_awarded]
+            print 'Received items: ' +\
+                  ', '.join([''.join([i.title() for i in item_id.split('_')[1:]]) +\
+                  ' x{0}'.format(item_ids.count(item_id)) for item_id in set(item_ids)])
+        else:
+            print 'Search failed'
 
     def _distance_between(self, point1, point2):
         return vincenty(point1, point2).meters
 
     def _player_distance_to(self, point):
-        return self.distance_between((self._player.lat, self._player.lon),
+        return self._distance_between((self._player.lat, self._player.lon),
                                      point)

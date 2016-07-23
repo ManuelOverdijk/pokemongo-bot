@@ -5,6 +5,7 @@ class Data(object):
         self.wild_pokemon = []
         self.decimated_spawn_points = []
         self.spawn_points = []
+        self.fort_summaries = []
         self.forts = []
 
 
