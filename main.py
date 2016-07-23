@@ -11,6 +11,7 @@ from utils.auth import PtcAuth
 from utils.rpc_client import RpcClient
 from utils.structures import Player
 from modules.testmodule import TestModule
+from modules.catch_pokemon import CatchPokemonModule
 
 
 def get_settings():
@@ -58,7 +59,8 @@ if __name__ == '__main__':
             scheduler = RandomizedTaskScheduler()
             bot = Bot(rpc, scheduler)
             bot.add_modules([
-                TestModule(priority=500)
+                TestModule(priority=5),
+                CatchPokemonModule(priority=500)
             ])
             bot.run_loop()
         else:
