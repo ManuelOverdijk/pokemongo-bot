@@ -11,6 +11,7 @@ from utils.auth import PtcAuth
 from utils.rpc_client import RpcClient
 from utils.structures import Player
 from modules.idle import IdleModule
+from modules.inventory_maintenance import InventoryMaintenanceModule
 from modules.catch_pokemon import CatchPokemonModule
 from modules.visit_pokestop import VisitPokestopModule
 
@@ -60,6 +61,7 @@ if __name__ == '__main__':
             bot = Bot(rpc, scheduler)
             bot.add_modules([
                 IdleModule(priority=5),
+                InventoryMaintenanceModule(priority=50),
                 VisitPokestopModule(priority=300),
                 CatchPokemonModule(priority=500)
             ])

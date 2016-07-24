@@ -14,3 +14,5 @@ class Player(object):
         self.lat = latitude
         self.lon = longitude
         self.alt = altitude
+        self.pokemon = []
+        self.inventory = []

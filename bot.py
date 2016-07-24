@@ -2,9 +2,9 @@ from time import time
 
 import POGOProtos.Networking.Requests_pb2 as Requests
 from processors import make_request, process_request, process_requests
+from utils.map import get_neighbours
 from utils.structures import Data
 from utils.task import Task
-from utils.map import get_neighbours
 
 
 class Bot(object):
@@ -56,13 +56,16 @@ class Bot(object):
 
     def __update_map_objects(self):
         cell_ids = get_neighbours(self.player.lat, self.player.lon)
-        request = make_request(Requests.GET_MAP_OBJECTS, params={
-            'cell_id': cell_ids,
-            'since_timestamp_ms': [self.__last_update] * len(cell_ids),
-            'latitude': self.player.lat,
-            'longitude': self.player.lon
-        })
-        response = process_request(self.rpc_client, request)
+        requests = [
+            make_request(Requests.GET_INVENTORY),
+            make_request(Requests.GET_MAP_OBJECTS, params={
+                'cell_id': cell_ids,
+                'since_timestamp_ms': [self.__last_update] * len(cell_ids),
+                'latitude': self.player.lat,
+                'longitude': self.player.lon
+            })
+        ]
+        response = process_requests(self.rpc_client, requests)
 
         if not response:
             print('Received empty MapObjects response')
@@ -70,6 +73,15 @@ class Bot(object):
 
         ## TODO: probably update our state in another method
         self.__last_update = int(time())
+
+        ## Inventory
+        inventory_items = response[4].inventory_delta.inventory_items
+        self.player.items = [item.inventory_item_data.item for item in
+                 inventory_items if item.inventory_item_data.item.item_id]
+        self.player.pokemon = [item.inventory_item_data.pokemon_data for item in
+                   inventory_items if item.inventory_item_data.pokemon_data.pokemon_id]
+
+        ## Map data
         attribs = {
             'catchable_pokemon': 'catchable_pokemons',
             'wild_pokemon': 'wild_pokemons',
@@ -83,7 +95,7 @@ class Bot(object):
         for attrib in attribs:
             setattr(self.data, attrib, [])
 
-        for map_cell in response.map_cells:
+        for map_cell in response[Requests.GET_MAP_OBJECTS].map_cells:
             for our_attrib, pb_attrib in attribs.items():
                 value = getattr(self.data, our_attrib)
                 value += getattr(map_cell, pb_attrib)
