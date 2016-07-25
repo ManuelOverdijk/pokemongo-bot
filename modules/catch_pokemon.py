@@ -1,4 +1,4 @@
-from POGOProtos.Enums_pb2 import _POKEMONID
+from POGOProtos.Enums_pb2 import PokemonId
 from basemodule import BaseModule, task
 from utils.settings import PARANOID_MODE, MAX_POKEMON
 
@@ -8,9 +8,8 @@ class CatchPokemonModule(BaseModule):
         catchable = self._data.catchable_pokemon
         wild = self._data.wild_pokemon
         pokemon = self._find_best_pokemon(catchable, wild)
-        caught_pokemon = self._player.pokemon
 
-        if pokemon and len(caught_pokemon) < MAX_POKEMON:
+        if pokemon:
             move_method = self.walk_to if PARANOID_MODE else self.teleport_to
             return (self.print_target_name(pokemon) +
                     move_method(pokemon.latitude, pokemon.longitude) +
@@ -21,7 +20,7 @@ class CatchPokemonModule(BaseModule):
 
     @task
     def print_target_name(self, pokemon):
-        name = _POKEMONID.values_by_number[pokemon.pokemon_id].name.title()
+        name = PokemonId.Name(pokemon.pokemon_id).title()
         print('Going to catch a %s.' % name)
 
     def _find_best_pokemon(self, catchable, wild):
