@@ -1,5 +1,5 @@
 from basemodule import BaseModule, task
-from utils.settings import PARANOID_MODE
+from utils.settings import PARANOID_MODE, MAX_ITEMS
 import POGOProtos.Map.Fort_pb2 as Forts
 
 class VisitPokestopModule(BaseModule):
@@ -10,6 +10,10 @@ class VisitPokestopModule(BaseModule):
         self._recent_stops = []
 
     def execute(self):
+        total_items = sum([item.count for item in self._player.inventory])
+        if total_items >= MAX_ITEMS:
+            return
+
         forts = self._data.forts
         pokestops = [fort for fort in forts if fort.type == Forts.CHECKPOINT and
                      not self._searched_recently(fort)]

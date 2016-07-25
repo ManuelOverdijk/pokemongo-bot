@@ -15,7 +15,7 @@ API_INITIAL_URL = 'https://pgorelease.nianticlabs.com/plfe/rpc'
 API_OWN_URL = 'https://{0}/rpc'
 
 MAX_POKEMON = 250
-MAX_ITEMS = 470
+MAX_ITEMS = 350
 
 ## Set to True in order to activate human-like walking behaviour
 PARANOID_MODE = False
