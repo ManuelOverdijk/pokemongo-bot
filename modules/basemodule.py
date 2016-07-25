@@ -4,6 +4,8 @@ from geopy.distance import vincenty
 
 from POGOProtos.Inventory_pb2 import ItemId
 import POGOProtos.Networking.Requests_pb2 as Requests
+from POGOProtos.Networking.Responses_pb2 import EncounterResponse, \
+    CatchPokemonResponse, FortSearchResponse
 from processors import make_request, process_request
 from utils.pgoexceptions import BotModuleException
 from utils.settings import STEP_SIZE_POLAR, STEP_SIZE_METERS
@@ -32,7 +34,7 @@ class BaseModule(object):
 
     def walk_to(self, lat, lon):
         distance = self._player_distance_to(lat, lon)
-        return [self.step_towards(lat, lon) for step in
+        return [self.step_towards(lat, lon)[0] for step in
                 range(int(distance / STEP_SIZE_METERS))]
 
     @task
@@ -63,7 +65,8 @@ class BaseModule(object):
         if answer and answer.status == 1:
             print 'Encounter successful!'
         else:
-            print 'Encounter failed!'
+            print 'Encounter failed: %s' % \
+                  EncounterResponse.Status.Name(answer.status)
 
     @task
     def catch_pokemon(self, encounter_id, spawn_point_id):
@@ -79,7 +82,8 @@ class BaseModule(object):
         if answer and answer.status == 1:
             print 'Catch successful'
         else:
-            print 'Catch failed'
+            print 'Catch failed: %s' % \
+                  CatchPokemonResponse.CatchStatus.Name(answer.status)
         pass
 
     def get_fort_details(self, fort_id, latitude, longitude):
@@ -106,7 +110,8 @@ class BaseModule(object):
                   ', '.join([''.join([i.title() for i in item_id.split('_')[1:]]) +\
                   ' x{0}'.format(item_ids.count(item_id)) for item_id in set(item_ids)])
         else:
-            print 'Search failed'
+            print 'Search failed: %s' % \
+                  FortSearchResponse.Result.Name(answer.result)
 
     def _distance_between(self, point1, point2):
         return vincenty(point1, point2).meters
