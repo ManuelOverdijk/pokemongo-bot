@@ -1,12 +1,15 @@
 from basemodule import BaseModule, task
 import POGOProtos.Networking.Requests_pb2 as Requests
 from processors import make_request, process_requests
+from utils.settings import MAX_POKEMON
 
 
 class InventoryMaintenanceModule(BaseModule):
 
     def execute(self):
-        if len(self._player.pokemon) != len(self._get_best_pokemon()):
+        caught_pokemon = self._player.pokemon
+        if len(caught_pokemon) >= (MAX_POKEMON - 10) and \
+            len(caught_pokemon) != len(self._get_best_pokemon()):
             return self.remove_low_cp_pokemon()
 
     @task

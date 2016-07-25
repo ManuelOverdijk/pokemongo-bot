@@ -42,7 +42,6 @@ def get_settings():
 
 
 if __name__ == '__main__':
-    # try:
     settings = get_settings()
     login_type = {
         'google': None,
@@ -61,20 +60,12 @@ if __name__ == '__main__':
             bot = Bot(rpc, scheduler)
             bot.add_modules([
                 IdleModule(priority=5),
-                InventoryMaintenanceModule(priority=50),
                 VisitPokestopModule(priority=300),
-                CatchPokemonModule(priority=500)
+                CatchPokemonModule(priority=500),
+                InventoryMaintenanceModule(priority=1000)
             ])
             bot.run_loop()
         else:
             print '[RPC] Failed to authenticate'
     else:
         print '[LOGIN] Login failed, check your username and password'
-
-    # except AuthenticationException as error:
-    #     print('AuthException: ' + error)
-    # except RpcException as error:
-    #     print('RpcException: ' + error)
-    # except ValueError as error:
-    #     print('ValueError: ' + error)
-    #     exit(1)

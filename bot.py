@@ -76,7 +76,7 @@ class Bot(object):
 
         ## Inventory
         inventory_items = response[4].inventory_delta.inventory_items
-        self.player.items = [item.inventory_item_data.item for item in
+        self.player.inventory = [item.inventory_item_data.item for item in
                  inventory_items if item.inventory_item_data.item.item_id]
         self.player.pokemon = [item.inventory_item_data.pokemon_data for item in
                    inventory_items if item.inventory_item_data.pokemon_data.pokemon_id]
