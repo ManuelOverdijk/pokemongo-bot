@@ -15,8 +15,8 @@ Leans heavily on [AeonLucid's Protobuf work](https://github.com/AeonLucid/POGOPr
 - [ ] Automatic usage of lucky eggs to gain XP boosts
 
 ###Installation:
-- Install [Google's 'protoc' tool](https://github.com/google/protobuf/releases/download/v3.0.0-beta-3.1/protoc-3.0.0-beta-3.1-osx-x86_64.zip), at version 3+
-- Pip install the requirements
+- Install [Google's 'protoc' tool](https://github.com/google/protobuf/releases/download/v3.0.0-beta-3.1/protoc-3.0.0-beta-3.1-osx-x86_64.zip), at version 3+ (Download files and copy to a $PATH dir)
+- Pip install the requirements (pip install -r requirements.txt --user python)
 - `bash scripts/compile_proto.sh`
 
 ###Running
