@@ -9,10 +9,18 @@ Leans heavily on [AeonLucid's Protobuf work](https://github.com/AeonLucid/POGOPr
 - [x] Configurable fast teleportation or actual human-like walking
 - [x] Farming of Pokémon with maximum XP bonuses
 - [x] Searching of PokéStops
-- [ ] Automatic transferral of the weakest CP Pokémon of each type
+- [x] Automatic transferral of the weakest CP Pokémon of each type
 - [ ] Evolving of the strongest CP Pokémon of each type
 - [ ] Automatic removal of unwanted items from the inventory
 - [ ] Automatic usage of lucky eggs to gain XP boosts
+
+###Installation:
+- Install [Google's 'protoc' tool](https://github.com/google/protobuf/releases/download/v3.0.0-beta-3.1/protoc-3.0.0-beta-3.1-osx-x86_64.zip), at version 3+
+- Pip install the requirements
+- `bash scripts/compile_proto.sh`
+
+###Running
+- `python main.py`
 
 ## Credits
 * https://github.com/AeonLucid/POGOProtos
